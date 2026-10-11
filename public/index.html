@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f3">
+  <title>Page Watch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Page Watch home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>page<span class="brand-light">watch</span></span>
+      </a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <button class="nav-item active" id="nav-monitors"><span class="nav-glyph">▤</span> Monitors <span class="nav-count" id="monitor-count">0</span></button>
+      <button class="nav-item" id="nav-changes"><span class="nav-glyph change-glyph">↗</span> Recent changes</button>
+      <div class="sidebar-bottom">
+        <div class="plan-note"><span class="plan-orb"></span><div><strong>Local workspace</strong><small>Snapshots stay on this machine</small></div></div>
+        <button class="nav-item settings-link" id="open-settings"><span class="nav-glyph">⚙</span> Alert settings</button>
+        <div class="sidebar-foot"><span class="live-dot"></span> Monitor service <span>●</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-separator">/</span><strong id="current-view">Monitors</strong></div>
+        <div class="top-actions"><span class="top-status"><span class="live-dot"></span> All systems operational</span><button class="icon-button" id="refresh-button" title="Refresh monitors" aria-label="Refresh monitors">↻</button><button class="avatar" aria-label="Local workspace">PW</button></div>
+      </header>
+
+      <section class="content-wrap">
+        <div class="page-heading">
+          <div><div class="eyebrow"><span class="eyebrow-line"></span> PAGE INTELLIGENCE</div><h1 id="page-title">Your watchlist</h1><p id="page-subtitle">Quietly keeping an eye on the pages that matter.</p></div>
+          <button class="primary-button" id="add-monitor"><span class="button-plus">+</span> Add monitor</button>
+        </div>
+
+        <div class="stats-row" aria-label="Monitor summary">
+          <div class="stat"><span class="stat-label">TRACKING</span><strong id="stat-total">0</strong><small>web pages</small></div>
+          <div class="stat"><span class="stat-label">CHANGES TODAY</span><strong id="stat-changes">0</strong><small>worth a look</small></div>
+          <div class="stat"><span class="stat-label">NEEDS ATTENTION</span><strong id="stat-issues">0</strong><small>pages to check</small></div>
+          <div class="sync-caption"><span class="pulse-ring"></span><span>Next check runs automatically</span></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="filter-tabs" role="tablist" aria-label="Filter monitors"><button class="filter-tab selected" data-filter="all">All pages</button><button class="filter-tab" data-filter="changed">Changed</button><button class="filter-tab" data-filter="issues">Issues</button></div>
+          <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Find a page…" aria-label="Find a page"></label>
+          <button class="sort-button" id="sort-button">Recently checked <span>⌄</span></button>
+        </div>
+
+        <div class="monitor-table-wrap">
+          <table class="monitor-table">
+            <thead><tr><th>PAGE</th><th>STATUS</th><th>LAST CHECKED</th><th>LAST CHANGE</th><th>INTERVAL</th><th></th></tr></thead>
+            <tbody id="monitor-rows"></tbody>
+          </table>
+          <div class="empty-state" id="empty-state" hidden>
+            <div class="empty-art"><span class="empty-lens"></span><span class="empty-spark">✳</span></div>
+            <div class="eyebrow">A LITTLE MORE AWARENESS</div><h2>Your watchlist is ready.</h2><p>Add a public page and Page Watch will let you know when something meaningful moves.</p>
+            <button class="primary-button" id="empty-add"><span class="button-plus">+</span> Add your first page</button>
+          </div>
+          <div class="no-results" id="no-results" hidden>No pages match those filters.</div>
+        </div>
+
+        <footer class="content-foot"><span>Monitoring public pages only</span><span class="foot-dot">·</span><span>Changes are compared against the last saved version</span><button id="policy-link">How checks work <span>↗</span></button></footer>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="dialog monitor-dialog" id="monitor-dialog">
+    <form id="monitor-form">
+      <div class="dialog-head"><div><div class="eyebrow">NEW WATCH</div><h2>Add a page</h2><p>Track meaningful changes on a public page.</p></div><button class="close-button" type="button" data-close="monitor-dialog" aria-label="Close">×</button></div>
+      <label class="field-label">Page name<input name="name" placeholder="e.g. Product release notes" required maxlength="90"></label>
+      <label class="field-label">Public page URL<div class="url-input"><span>↗</span><input name="url" type="url" placeholder="https://example.com/updates" required></div></label>
+      <div class="field-grid"><label class="field-label">Check interval<select name="interval_minutes"><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option><option value="60" selected>Every hour</option><option value="180">Every 3 hours</option><option value="360">Every 6 hours</option><option value="720">Every 12 hours</option><option value="1440">Every 24 hours</option></select></label><label class="field-label">Sensitivity<select name="sensitivity"><option value="low">Low · ignore more noise</option><option value="medium" selected>Medium · balanced</option><option value="high">High · catch every detail</option></select></label></div>
+      <details class="advanced-fields"><summary>Fine-tune what counts</summary>
+        <label class="field-label">Watch a specific region <span class="label-hint">CSS selector</span><div class="selector-row"><input name="watch_selector" placeholder="main, article, #release-notes"><button class="picker-button" type="button" data-pick="watch_selector">Pick region</button></div></label>
+        <label class="field-label">Ignore a region <span class="label-hint">CSS selector</span><div class="selector-row"><input name="ignore_selector" placeholder=".cookie-banner, #ticker"><button class="picker-button secondary" type="button" data-pick="ignore_selector">Pick region</button></div></label>
+        <label class="field-label">Only alert when added text contains <span class="label-hint">Comma-separated keywords</span><input name="keywords" placeholder="pricing, availability"></label>
+      </details>
+      <div class="form-error" id="form-error" role="alert" hidden></div>
+      <div class="dialog-actions"><button class="text-button" type="button" data-close="monitor-dialog">Cancel</button><button class="primary-button" type="submit">Start watching <span>→</span></button></div>
+      <div class="security-note"><span>◈</span> Public pages only. No sign-ins, cookies, or credentials are stored.</div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog settings-dialog" id="settings-dialog">
+    <form id="settings-form">
+      <div class="dialog-head"><div><div class="eyebrow">DELIVERY</div><h2>Alert settings</h2><p>Choose where a meaningful change should land.</p></div><button class="close-button" type="button" data-close="settings-dialog" aria-label="Close">×</button></div>
+      <label class="field-label">Webhook URLs <span class="label-hint">One URL per line · Discord and Telegram compatible</span><textarea name="webhooks" rows="4" placeholder="https://discord.com/api/webhooks/…"></textarea></label>
+      <label class="field-label">Email address <span class="label-hint" id="email-readiness"></span><input name="email" type="email" placeholder="you@example.com"></label>
+      <div class="security-note">Webhook endpoints are stored locally. Email delivery also needs <code>SMTP_URL</code> configured on the service.</div>
+      <div class="form-error" id="settings-error" role="alert" hidden></div>
+      <div class="dialog-actions"><button class="text-button" type="button" data-close="settings-dialog">Cancel</button><button class="primary-button" type="submit">Save settings <span>→</span></button></div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog history-dialog" id="history-dialog">
+    <div class="history-head"><div><div class="eyebrow">VERSION HISTORY</div><h2 id="history-title">Page history</h2><a id="history-url" href="#" target="_blank" rel="noreferrer"></a></div><button class="close-button" type="button" data-close="history-dialog" aria-label="Close">×</button></div>
+    <div class="history-layout"><div class="timeline-pane"><div class="pane-label">SAVED VERSIONS <span id="version-count">0</span></div><div id="timeline" class="timeline-list"></div></div><div class="compare-pane"><div class="compare-controls"><label>OLDER VERSION<select id="older-version"></select></label><span class="compare-arrow">→</span><label>NEWER VERSION<select id="newer-version"></select></label></div><div id="comparison" class="comparison"><div class="compare-placeholder">Choose two versions to compare.</div></div></div></div>
+  </dialog>
+
+  <dialog class="dialog picker-dialog" id="picker-dialog">
+    <div class="picker-head"><div><div class="eyebrow">VISUAL PICKER</div><h2>Choose a page region</h2><p>Select a highlighted area to use as a CSS selector.</p></div><button class="close-button" type="button" data-close="picker-dialog" aria-label="Close">×</button></div>
+    <div id="picker-error" class="form-error" hidden></div><div id="picker-stage" class="picker-stage"></div>
+    <div class="picker-foot"><span id="picker-selected">Select a region in the preview.</span><button class="primary-button" id="apply-region" disabled>Use this region <span>→</span></button></div>
+  </dialog>
+
+  <dialog class="dialog policy-dialog" id="policy-dialog">
+    <div class="dialog-head"><div><div class="eyebrow">BUILT FOR SIGNAL</div><h2>Checks with restraint.</h2></div><button class="close-button" type="button" data-close="policy-dialog" aria-label="Close">×</button></div>
+    <div class="policy-list"><div><span class="policy-number">01</span><div><strong>Outage or CAPTCHA?</strong><p>Marked as an error or blocked state. It never becomes a content change or sends a change alert.</p></div></div><div><span class="policy-number">02</span><div><strong>One page, many watchers?</strong><p>Matching URLs due together share one browser fetch, then each monitor applies its own selectors and sensitivity.</p></div></div><div><span class="policy-number">03</span><div><strong>Content that changes constantly?</strong><p>Strip common volatile elements, normalize timestamps and tokens, then lower sensitivity or watch a smaller region.</p></div></div><div><span class="policy-number">04</span><div><strong>How do checks stay polite?</strong><p>Minimum 15-minute intervals, one queued browser job at a time, 5-second origin spacing, timeouts, and two retries.</p></div></div></div>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/vendor/diff.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

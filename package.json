@@ -1,0 +1,19 @@
+{
+  "name": "page-watch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "install-browser": "playwright install chromium"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "diff": "^7.0.0",
+    "nodemailer": "^6.9.16",
+    "playwright": "^1.51.0"
+  }
+}
